@@ -32,12 +32,12 @@ frontend =
               "type" =: "text/css" <> "rel" =: "stylesheet")
              blank
     , _frontend_body =
-        do el "h1" $ text "Welcome to Obelisk!"
+        do el "h1" $ text "λ Welcome to Obelisk!"
            el "p" $ text $ T.pack commonStuff
            el "div" $ do
              t <- inputElement def
              text " "
-             dynText $ _inputElement_value t
+             divClass "bg-red-700" $ dynText $ _inputElement_value t
       -- `prerender` and `prerender_` let you choose a widget to run on the server
       -- during prerendering and a different widget to run on the client with
       -- JavaScript. The following will generate a `blank` widget on the server and

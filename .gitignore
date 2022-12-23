@@ -1,3 +1,6 @@
+package-lock.json
+static/main.css
+node_modules/
 .attr-cache
 .cabal-sandbox
 *.hi
