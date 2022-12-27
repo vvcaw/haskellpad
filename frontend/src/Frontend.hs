@@ -37,7 +37,7 @@ frontend =
            el "div" $ do
              t <- inputElement def
              text " "
-             divClass "bg-red-700" $ dynText $ _inputElement_value t
+             divClass "bg-red-700 font-fira" $ dynText $ _inputElement_value t
       -- `prerender` and `prerender_` let you choose a widget to run on the server
       -- during prerendering and a different widget to run on the client with
       -- JavaScript. The following will generate a `blank` widget on the server and
