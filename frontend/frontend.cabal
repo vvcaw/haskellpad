@@ -13,7 +13,7 @@ library
                , reflex-dom-core
                , obelisk-executable-config-lookup
                , obelisk-generated-static
-               , text
+               , hint
   exposed-modules:
     Frontend
   ghc-options: -Wall -Wredundant-constraints -Wincomplete-uni-patterns -Wincomplete-record-updates -O -fno-show-valid-hole-fits
@@ -27,7 +27,7 @@ executable frontend
                , obelisk-route
                , reflex-dom
                , obelisk-generated-static
-               , frontend
+               , hint
   ghc-options: -threaded -O -Wall -Wredundant-constraints -Wincomplete-uni-patterns -Wincomplete-record-updates -fno-show-valid-hole-fits
   if impl(ghcjs)
     ghc-options: -dedupe
