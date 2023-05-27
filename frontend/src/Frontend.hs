@@ -6,6 +6,8 @@
 module Frontend where
 
 import Control.Monad
+import Control.Monad.Fix
+import qualified Data.Map as M
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as T
 import Language.Javascript.JSaddle (eval, liftJSM)
@@ -113,3 +115,10 @@ frontend =
                     performEvent_ $ (\x -> liftIO((putStrLn (T.pack x)))) <$> (updated $ _inputElement_value t)
             return ()-}
     }
+
+buildConsole :: DomBuilder t m => m ()
+buildConsole = divClass "w-full h-40 border border-PURPLE" $ return ()
+
+-- Just x means, the widget should render, Nothing means it shouldn't
+toMap :: Int -> M.Map Int (Maybe ())
+toMap x = M.singleton x (Just ())
