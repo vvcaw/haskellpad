@@ -71,20 +71,45 @@ frontend =
     , _frontend_body = 
         do
             bu <- button "asdf"
+            prerender_ blank $ performEvent_ $ (\() -> liftIO(putStrLn "asdf")) <$> bu
+            performEvent_ $ (\() -> liftIO(putStrLn "lol wtf")) <$> bu
             uuidEvent <- fmap (switch . current) . prerender (return never) $ 
                 performEvent (ffor bu $ \() -> liftIO (putStrLn "asdf") )
+            t <-
+                inputElement $ def & inputElementConfig_elementConfig .
+                elementConfig_initialAttributes .~
+                mconcat ["class" =: "bg-white w-auto"]
+            --divClass "bg-red-700 font-fira w-full" $ dynText $
             text "asdff"--do
- --       result <- liftIO $ runInterpreter $ do
- --           setImports ["Prelude"]
- --           interpret "1 + 1" (const True :: [Bool] -> Bool)
- --       divClass "w-full h-screen bg-gray-700" $ do
- --         divClass
- --           "border rounded-md border-indigo-400 p-2 space-y-2 w-full flex flex-wrap justify-around" $ do
- --           divClass "text-indigo-400 w-auto" $ text "λ"
- --           t <-
- --             inputElement $ def & inputElementConfig_elementConfig .
- --             elementConfig_initialAttributes .~
- --             mconcat ["class" =: "bg-white w-auto"]
-   --         divClass "bg-red-700 font-fira w-full" $ dynText $
-     --         _inputElement_value t
+            t <-
+                inputElement $ def & inputElementConfig_elementConfig .
+                elementConfig_initialAttributes .~
+                mconcat ["class" =: "bg-white w-auto"]
+            --divClass "bg-red-700 font-fira w-full" $ dynText $
+            performEvent_ $ (\x -> liftIO((putStrLn (T.unpack x)))) <$> (updated $ _inputElement_value t)
+
+            {-dynText $ _inputElement_value t >>= \change -> do 
+                res <- performEvent $ (\val -> return (T.unpack val)) <$> (updated $ _inputElement_value t)
+                return $ T.pack res-}
+
+            dynText $ _inputElement_value t >>= \change -> do 
+                --res <- performEvent $ (\val -> return (T.unpack val)) <$> (updated $ _inputElement_value t)
+                return $ T.pack $ 'a' : (T.unpack change)
+                --return $ T.pack res
+            
+            -- Same behaviour, but returns the event with changed word as result
+            ev <- performEvent $ (\val -> return (T.unpack val)) <$> (updated $ _inputElement_value t)
+            performEvent_ $ (\val -> liftIO(putStrLn ("lol wtf: " ++ val))) <$> ev
+            return ()
+            {-divClass "w-full h-screen bg-gray-700" $ do
+              divClass
+                "border rounded-md border-indigo-400 p-2 space-y-2 w-full flex flex-wrap justify-around" $ do
+                divClass "text-indigo-400 w-auto" $ text "λ" $ do
+                    t <-
+                        inputElement $ def & inputElementConfig_elementConfig .
+                        elementConfig_initialAttributes .~
+                        mconcat ["class" =: "bg-white w-auto"]
+                    --divClass "bg-red-700 font-fira w-full" $ dynText $
+                    performEvent_ $ (\x -> liftIO((putStrLn (T.pack x)))) <$> (updated $ _inputElement_value t)
+            return ()-}
     }
