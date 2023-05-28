@@ -7,7 +7,6 @@ module Frontend where
 
 import Control.Monad
 import Control.Monad.Fix
-import qualified Data.Map as M
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as T
 import Language.Javascript.JSaddle (eval, liftJSM)
@@ -77,26 +76,27 @@ frontend =
             performEvent_ $ (\() -> liftIO(putStrLn "lol wtf")) <$> bu
             uuidEvent <- fmap (switch . current) . prerender (return never) $ 
                 performEvent (ffor bu $ \() -> liftIO (putStrLn "asdf") )
+
             t <-
                 inputElement $ def & inputElementConfig_elementConfig .
                 elementConfig_initialAttributes .~
                 mconcat ["class" =: "bg-white w-auto"]
             --divClass "bg-red-700 font-fira w-full" $ dynText $
             text "asdff"--do
-            t <-
-                inputElement $ def & inputElementConfig_elementConfig .
-                elementConfig_initialAttributes .~
-                mconcat ["class" =: "bg-white w-auto"]
-            --divClass "bg-red-700 font-fira w-full" $ dynText $
             performEvent_ $ (\x -> liftIO((putStrLn (T.unpack x)))) <$> (updated $ _inputElement_value t)
+
+            e <- performEvent $ (\val -> func (return $ T.unpack val)) <$> (updated $ _inputElement_value t)
+            dyn <- accumDyn (\initial text -> text) (T.pack "") e
+            text "help "
+            dynText dyn
 
             {-dynText $ _inputElement_value t >>= \change -> do 
                 res <- performEvent $ (\val -> return (T.unpack val)) <$> (updated $ _inputElement_value t)
                 return $ T.pack res-}
 
-            dynText $ _inputElement_value t >>= \change -> do 
+            --dynText $ _inputElement_value t >>= \change -> do 
                 --res <- performEvent $ (\val -> return (T.unpack val)) <$> (updated $ _inputElement_value t)
-                return $ T.pack $ 'a' : (T.unpack change)
+                --return $ T.pack $ 'a' : (T.unpack change)
                 --return $ T.pack res
             
             -- Same behaviour, but returns the event with changed word as result
@@ -116,9 +116,23 @@ frontend =
             return ()-}
     }
 
+func x = do
+    text <- x
+    liftIO((putStrLn ((text) ++ " from func"))) 
+    result <- liftIO $ runInterpreter $ do
+        setImports ["Prelude"]
+        interpret text (as :: String)
+    case result of
+        (Left err) -> return $ T.pack "Compilation failed :bonk:"
+        (Right str) -> return $ T.pack str
+
 buildConsole :: DomBuilder t m => m ()
 buildConsole = divClass "w-full h-40 border border-PURPLE" $ return ()
 
+textFieldChanged inputEl = eventOccured
+    where
+        eventOccured = leftmost $ updated <$> (_inputElement_value <$> inputEl)
+
 -- Just x means, the widget should render, Nothing means it shouldn't
-toMap :: Int -> M.Map Int (Maybe ())
-toMap x = M.singleton x (Just ())
+--toMap :: Int -> M.Map Int (Maybe ())
+--toMap x = M.singleton x (Just ())
