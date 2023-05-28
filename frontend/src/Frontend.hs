@@ -71,24 +71,17 @@ frontend =
              blank
     , _frontend_body = 
         do
-            bu <- button "asdf"
-            prerender_ blank $ performEvent_ $ (\() -> liftIO(putStrLn "asdf")) <$> bu
-            performEvent_ $ (\() -> liftIO(putStrLn "lol wtf")) <$> bu
-            uuidEvent <- fmap (switch . current) . prerender (return never) $ 
-                performEvent (ffor bu $ \() -> liftIO (putStrLn "asdf") )
-
-            t <-
-                inputElement $ def & inputElementConfig_elementConfig .
-                elementConfig_initialAttributes .~
-                mconcat ["class" =: "bg-white w-auto"]
+            divClass "bg-indigo-400 font-fira w-full" $ do
+                t <-
+                    inputElement $ def & inputElementConfig_elementConfig .
+                    elementConfig_initialAttributes .~
+                    mconcat ["class" =: "bg-white w-auto"]
             --divClass "bg-red-700 font-fira w-full" $ dynText $
-            text "asdff"--do
-            performEvent_ $ (\x -> liftIO((putStrLn (T.unpack x)))) <$> (updated $ _inputElement_value t)
+                performEvent_ $ (\x -> liftIO((putStrLn (T.unpack x)))) <$> (updated $ _inputElement_value t)
 
-            e <- performEvent $ (\val -> func (return $ T.unpack val)) <$> (updated $ _inputElement_value t)
-            dyn <- accumDyn (\initial text -> text) (T.pack "") e
-            text "help "
-            dynText dyn
+                e <- performEvent $ (\val -> func (return $ T.unpack val)) <$> (updated $ _inputElement_value t)
+                dyn <- accumDyn (\initial text -> text) (T.pack "") e
+                dynText dyn
 
             {-dynText $ _inputElement_value t >>= \change -> do 
                 res <- performEvent $ (\val -> return (T.unpack val)) <$> (updated $ _inputElement_value t)
@@ -100,8 +93,6 @@ frontend =
                 --return $ T.pack res
             
             -- Same behaviour, but returns the event with changed word as result
-            ev <- performEvent $ (\val -> return (T.unpack val)) <$> (updated $ _inputElement_value t)
-            performEvent_ $ (\val -> liftIO(putStrLn ("lol wtf: " ++ val))) <$> ev
             return ()
             {-divClass "w-full h-screen bg-gray-700" $ do
               divClass
@@ -121,9 +112,9 @@ func x = do
     liftIO((putStrLn ((text) ++ " from func"))) 
     result <- liftIO $ runInterpreter $ do
         setImports ["Prelude"]
-        interpret text (as :: String)
+        interpret ("show $" ++ text) (as :: String)
     case result of
-        (Left err) -> return $ T.pack "Compilation failed :bonk:"
+        (Left err) -> return $ T.pack " Your code is bad. (╯’_ ’)╯︵ ┻━┻"
         (Right str) -> return $ T.pack str
 
 buildConsole :: DomBuilder t m => m ()
